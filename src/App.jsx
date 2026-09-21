@@ -1,121 +1,99 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
 
+const menuItems = [
+  { name: 'Pizza', price: 20.0 },
+  { name: 'Taco', price: 5.0 },
+  { name: 'Ice Cream', price: 10.0 },
+  { name: 'Burrito', price: 15.0 }
+]
+const taxRate = 0.0975
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [selectedItems, setSelectedItems] = useState([])
+  const [numPeople, setNumPeople] = useState(1)
+  const [tipPercent, setTipPercent] = useState(15)
+
+  function handleToggle(name) {
+    if (selectedItems.includes(name)) {
+      setSelectedItems(selectedItems.filter(item => item !== name))
+    } else {
+      setSelectedItems([...selectedItems, name])
+    }
+  }
+
+  let subtotal = 0
+
+  for (const item of menuItems) {
+    if (selectedItems.includes(item.name)) {
+      subtotal += item.price
+    }
+  }
+
+  const tax = subtotal * taxRate
+  const tip = subtotal * (tipPercent / 100)
+  const total = subtotal + tax + tip
+  const perPerson = total / numPeople
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="app-container">
+      <header>
+        <h1>Resteraunt Bill Splitter</h1>
+      </header>
+
+      <main>
+        <h2>Availble Items</h2>
+        <p>Local Tax(Los Angeles, CA): 9.75%</p>
+        {menuItems.map(menuItem => (
+          <div key={menuItem.name}>
+            <label>
+              <input
+                type="checkbox"
+                checked={selectedItems.includes(menuItem.name)}
+                onChange={() => handleToggle(menuItem.name)}
+              />
+              {menuItem.name} - ${menuItem.price}
+            </label>
+          </div>
+        ))}
+        <div>
+          <label htmlFor="party size">Party Size;</label>
+          <input
+            id="party size"
+            type="number"
+            min="1"
+            value={numPeople}
+            onChange={e => setNumPeople(Math.max(1, Number(e.target.value)))}
+          />
         </div>
         <div>
-          <h1>Get started</h1>
+          <label htmlFor="tip range">Tip: {tipPercent}%</label>
+          <input
+            id="tip range"
+            type="range"
+            min="0"
+            max="30"
+            step="1"
+            value={tipPercent}
+            onChange={e => setTipPercent(Number(e.target.value))}
+          />
+        </div>
+        <div>
+          <h3>Order Summary</h3>
+          <p>Items Cost: ${subtotal.toFixed(2)}</p>
+          <p>Tax: ${tax.toFixed(2)}</p>
+          <p>Tip: ${tip.toFixed(2)}</p>
           <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+            <strong>Total: ${total.toFixed(2)}</strong>
+          </p>
+          <p>
+            <strong>Total Per Party Member: ${perPerson.toFixed(2)}</strong>
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </main>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <footer></footer>
+    </div>
   )
 }
 
