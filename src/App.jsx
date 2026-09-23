@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import taco from './assets/taco.jpg'
 
 const menuItems = [
   { name: 'Pizza', price: 20.0 },
@@ -38,14 +39,25 @@ function App() {
   return (
     <div className="app-container">
       <header>
+        <img 
+      src={taco} 
+      alt="Tasty taco yum" 
+      style={{ width: '80px', height: '80px', objectFit: 'contain' }} 
+  />
         <h1>Resteraunt Bill Splitter</h1>
       </header>
 
       <main>
         <h2>Availble Items</h2>
-        <p>Local Tax(Los Angeles, CA): 9.75%</p>
+        <p>Local Tax(Los Angeles, CA): 9.75%
+          <a
+            href="https://cdtfa.ca.gov/taxes-and-fees/rates.aspx"
+          >
+            (Tax Rate Source)
+          </a>
+        </p>
         {menuItems.map(menuItem => (
-          <div key={menuItem.name}>
+          <div key={menuItem.name} className="menu-item">
             <label>
               <input
                 type="checkbox"
@@ -56,7 +68,7 @@ function App() {
             </label>
           </div>
         ))}
-        <div>
+        <div className="form-group">
           <label htmlFor="party size">Party Size;</label>
           <input
             id="party size"
@@ -66,7 +78,7 @@ function App() {
             onChange={e => setNumPeople(Math.max(1, Number(e.target.value)))}
           />
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="tip range">Tip: {tipPercent}%</label>
           <input
             id="tip range"
@@ -78,7 +90,7 @@ function App() {
             onChange={e => setTipPercent(Number(e.target.value))}
           />
         </div>
-        <div>
+        <div className="summary-card">
           <h3>Order Summary</h3>
           <p>Items Cost: ${subtotal.toFixed(2)}</p>
           <p>Tax: ${tax.toFixed(2)}</p>
@@ -92,7 +104,9 @@ function App() {
         </div>
       </main>
 
-      <footer></footer>
+      
+
+      <footer>Eat food</footer>
     </div>
   )
 }
